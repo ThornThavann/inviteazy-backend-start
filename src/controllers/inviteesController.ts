@@ -1,58 +1,57 @@
 import { NextFunction, Request, Response } from "express";
-import { InviteeService } from "../services/inviteesService";
+import {IInviteeWithoutId, IInviteeService } from "../interfaces/inviteesInterfaces";
 
-export class InviteeController {
-  constructor(private inviteeService: InviteeService) {}
+export class InviteesController {
+    constructor(private inviteesService: IInviteeService) {}
 
-//   Get all invitees
-async getAllInvitees(req: Request, res: Response, next: NextFunction) {
-  try {
-    // Fetch all invitees from the service (no ID needed here)
-    const result = await this.inviteeService.getAllInvitees();
-    
-    // Return the data as a response
-    res.json({ message: "All invitees", data: result });
-  } catch (error) {
-    console.error("Error fetching all invitees:", (error as Error).message);
-    next(error);
-  }
-}
-
-
-
-  // Create invitee
-  async createInvitee(req: Request, res: Response, next: NextFunction) {
-    try {
-      const inviteeData = req.body;
-      const result = await this.inviteeService.createInvitee(inviteeData);
-      res.status(201).json({ message: "Invitee created", data: result });
-    } catch (error) {
-      console.error("Error creating invitee:", (error as Error).message);
-      next(error);
-    }
-  }
-
-  // PATCH /api/v1/invitations/:inviteeId
-async updateInviteeStatus(req: Request, res: Response, next: NextFunction) {
-  try {
-    const inviteeId = req.params.id;
-    const { status } = req.body;
-
-    const validStatuses = ["accept", "maybe", "no", "busy"];
-    if (!validStatuses.includes(status)) {
-      return res.status(400).json({ message: "Invalid status value" });
+    async getAllInvitees(req: Request, res: Response, next: NextFunction) {
+        try {
+            const result = await this.inviteesService.findAll();
+            res.json({ message: "Get all invitees", data: result });
+        } catch (error) {
+            next(error);
+        }
     }
 
-    const updateResult = await this.inviteeService.updateInviteeStatus(inviteeId, status);
-    if (updateResult === null || updateResult === undefined) {
-      return res.status(404).json({ message: "Invitee not found" });
+    async getInviteeById(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { id } = req.params;
+            const result = await this.inviteesService.findById(id);
+            res.json({ message: "Get invitee by Id", data: result });
+        } catch (error) {
+            next(error);
+        }
     }
 
-    res.json({ message: "Invitee status updated", data: updateResult });
-  } catch (error) {
-    console.error("Error updating invitee status:", (error as Error).message);
-    next(error);
-  }
-}
+    async createInvitee(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { event_id } = req.params;
+            const invitee: IInviteeWithoutId = req.body;
+            const newInvitee = await this.inviteesService.create({ ...invitee, event_id });
+            res.status(201).json({ message: "New invitee created", data: newInvitee });
+        } catch (error) {
+            next(error);
+        }
+    }
 
+    async updateInvitee(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { id } = req.params;
+            const invitee: Partial<IInviteeWithoutId> = req.body;
+            const updatedInvitee = await this.inviteesService.update(id, invitee);
+            res.json({ message: "Invitee updated successfully", data: updatedInvitee });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async deleteInvitee(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { id } = req.params;
+            await this.inviteesService.delete(id);
+            res.status(200).json({ message: "Invitee deleted successfully" });
+        } catch (error) {
+            next(error);
+        }
+    }
 }

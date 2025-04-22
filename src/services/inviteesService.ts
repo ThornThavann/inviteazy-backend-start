@@ -1,17 +1,41 @@
-import { Invitee, InviteesRepository } from "../interfaces/inviteesInterfaces";
+import { IInvitee, IInviteeService, IInviteeWithoutId } from '../interfaces/inviteesInterfaces';
+import jwt from 'jsonwebtoken';
 
-export class InviteeService {
-  constructor(private inviteesRepository: InviteesRepository) {}
+export class InviteeService implements IInviteeService {
+    constructor(private inviteeRepository: IInviteeService) {}
 
-  async getAllInvitees(): Promise<Invitee[]> {
-    return this.inviteesRepository.findAll();
-  }
+    async findAll(): Promise<IInvitee[]> {
+        return await this.inviteeRepository.findAll();
+    }
 
-  async createInvitee(inviteeData: Omit<Invitee, "id">): Promise<Invitee> {
-    return this.inviteesRepository.createInvitee(inviteeData);
-  }
+    async findById(id: string): Promise<IInvitee | null> {
+        const invitee = await this.inviteeRepository.findById(id);
+        if (!invitee) throw Object.assign(new Error('Invitee not found'), { status: 404 });
+        return invitee;
+    }
 
-  async updateInviteeStatus(inviteeId: string, status: string): Promise<void> {
-    await this.inviteesRepository.updateStatus(inviteeId, status);
-  }
+    async findByEventId(event_id: string): Promise<IInvitee[]> {
+        return await this.inviteeRepository.findByEventId(event_id);
+    }
+
+    async findByUserId(user_id: string): Promise<IInvitee[]> {
+        return await this.inviteeRepository.findByUserId(user_id);
+    }
+
+    async create(invitee: IInviteeWithoutId): Promise<IInvitee> {
+        const existingInvitees = await this.inviteeRepository.findByUserId(invitee.user_id);
+        if (existingInvitees.length > 0) {
+            throw Object.assign(new Error('Invitee already exists'), { status: 400 });
+        }
+
+        return await this.inviteeRepository.create(invitee);
+    }
+
+    async update(id: string, invitee: Partial<IInviteeWithoutId>): Promise<IInvitee | null> {
+        return await this.inviteeRepository.update(id, invitee);
+    }
+
+    delete(id: string): Promise<void> {
+        return this.inviteeRepository.delete(id);
+    }
 }
