@@ -75,3 +75,26 @@ export const eventSchema = z.object({
   location: z.string(),
   description: z.string().optional(),
 });
+
+
+export const validateInvitee = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  try {
+    InviteeSchema.parse(req.body);
+    next();
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      res.status(400).json({ message: error.errors[0].message });
+      return;
+    }
+    next(error);
+  }
+};
+export const InviteeSchema = z.object({
+  userId: z.string().uuid(),     // the ID of the invited user
+  eventId: z.string().uuid(),    // the event they're invited to
+  status: z.enum(["pending", "accepted", "declined"]).optional(), // optional status
+});
