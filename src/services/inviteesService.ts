@@ -2,6 +2,9 @@ import { IInvitee, IInviteeService, IInviteeWithoutId } from '../interfaces/invi
 import jwt from 'jsonwebtoken';
 
 export class InviteeService implements IInviteeService {
+    static updateStatus(id: string, status: any) {
+        throw new Error("Method not implemented.");
+    }
     constructor(private inviteeRepository: IInviteeService) {}
 
     async findAll(): Promise<IInvitee[]> {
@@ -31,11 +34,14 @@ export class InviteeService implements IInviteeService {
         return await this.inviteeRepository.create(invitee);
     }
 
-    async update(id: string, invitee: Partial<IInviteeWithoutId>): Promise<IInvitee | null> {
-        return await this.inviteeRepository.update(id, invitee);
-    }
+    // async update(id: string, invitee: Partial<IInviteeWithoutId>): Promise<IInvitee | null> {
+    //     return await this.inviteeRepository.update(id, invitee);
+    // }
 
-    delete(id: string): Promise<void> {
-        return this.inviteeRepository.delete(id);
-    }
+    // delete(id: string): Promise<void> {
+    //     return this.inviteeRepository.delete(id);
+    // }
+    async updateStatus(id: string, status: string): Promise<IInvitee | null> {
+        return await this.inviteeRepository.updateStatus(id, status);
+      }
 }
