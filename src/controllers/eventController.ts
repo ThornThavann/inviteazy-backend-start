@@ -29,8 +29,8 @@ export class EventController {
       // const {id} = req.userid;
       console.log('user',req.user)
 
-      // console.log(id);
- 
+      console.log('id');
+      
       // if (!id) {
       //   res.status(401).json({ message: "Unauthorized: Missing user_id" });
       //   return;
