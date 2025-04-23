@@ -23,7 +23,7 @@ export class InviteeService implements IInviteeService {
     }
 
     async create(invitee: IInviteeWithoutId): Promise<IInvitee> {
-        const existingInvitees = await this.inviteeRepository.findByUserId(invitee.user_id);
+        const existingInvitees = await this.inviteeRepository.findByUserId(String(invitee.user_id));
         if (existingInvitees.length > 0) {
             throw Object.assign(new Error('Invitee already exists'), { status: 400 });
         }
