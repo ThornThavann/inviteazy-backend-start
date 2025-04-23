@@ -57,11 +57,14 @@ export class UserService implements IUserService {
     return {
       user: {
         id: user.id,
-        name: user.name,
-        role: user.role,
+        full_name: user.full_name, // changed 
         email: user.email,
+        phone_number: user.phone_number, // optional
+        profile_picture: user.profile_picture, // optional
+        address: user.address, // optional
       },
       token,
     };
   }
 }
+

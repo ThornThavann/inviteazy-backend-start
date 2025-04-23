@@ -1,6 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import redisCache from "../services/cacheService";
 import { IEvent, IEventService } from "../interfaces/eventInterface";
+interface AuthRequest extends Request {
+  userid?: any;
+}
 export class EventController {
   private eventService: IEventService;
 
@@ -20,23 +23,32 @@ export class EventController {
     }
   }
 
-  async createUser(req: Request, res: Response, next: NextFunction) {
+  async createEvent(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-      const { name, date, time, location, description }: Omit<IEvent, "id"> =
-        req.body;
+      const { event_name, event_datetime, location, description } = req.body;
+      // const {id} = req.userid;
+      console.log('user',req.user)
+
+      // console.log(id);
+ 
+      // if (!id) {
+      //   res.status(401).json({ message: "Unauthorized: Missing user_id" });
+      //   return;
+      // }
+  
       const newEvent = await this.eventService.createEvent({
-        name,
-        date,
-        time,
+        event_name,
+        event_datetime,
         location,
         description,
+        user_id:`${req.user}`
       });
-      res
-        .status(201)
-        .json({ message: "A new event was created.", data: newEvent });
+  
+      res.status(201).json({ message: "A new event was created.", data: newEvent });
     } catch (err) {
       console.log(err);
       next(err);
     }
   }
+  
 }
