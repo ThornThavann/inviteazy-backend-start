@@ -2,7 +2,7 @@ export interface IInvitee {
   id?: string;
   event_id: string; 
   user_id: string; 
-  status: 'pending' | 'accept' | 'maybe' | 'no' | 'busy'; 
+  status: 'invited' | 'accept' | 'maybe' | 'no' | 'busy'; 
   qr_code: string;
   is_checked_in: boolean; 
   checked_in_at: Date | null; 
@@ -11,7 +11,7 @@ export interface IInvitee {
 
 export interface IInviteeWithoutId extends Omit<IInvitee, 'id' | 'created_at'> {
   event_id: string; 
-  status: 'pending' | 'accept' | 'maybe' | 'no' | 'busy'; 
+  status: 'invited' | 'accept' | 'maybe' | 'no' | 'busy'; 
   qr_code: string;
   is_checked_in: boolean; 
   checked_in_at: Date | null;
