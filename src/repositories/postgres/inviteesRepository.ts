@@ -58,26 +58,45 @@ export class PostgresInviteesRepository implements IInviteeRepository {
         return rows[0];
     }
 
-    async update(id: string, invitee: Partial<IInviteeWithoutId>): Promise<IInvitee | null> {
-        const updates = [];
-        const values = [];
-        let index = 1;
+    // async update(id: string, invitee: Partial<IInviteeWithoutId>): Promise<IInvitee | null> {
+    //     const updates = [];
+    //     const values = [];
+    //     let index = 1;
 
-        for (const [key, value] of Object.entries(invitee)) {
-            updates.push(`${key} = $${index++}`);
-            values.push(value);
+    //     for (const [key, value] of Object.entries(invitee)) {
+    //         updates.push(`${key} = $${index++}`);
+    //         values.push(value);
+    //     }
+
+    //     values.push(id);
+    //     const query = `UPDATE invitees SET ${updates.join(', ')} WHERE id = $${index} RETURNING *`;
+
+    //     const { rows } = await queryWithLogging(this.pool, query, values);
+    //     return rows[0] || null;
+    // }
+
+    // async delete(id: string): Promise<void> {
+    //     await queryWithLogging(this.pool, "DELETE FROM invitees WHERE id = $1", [id]);
+    // }
+    async updateStatus(id: string, status: string) {
+        try {
+          // Update the invitee's status in the database
+          const result = await this.pool.query(
+            "UPDATE invitees SET status = $1 WHERE id = $2 RETURNING *",
+            [status, id]
+          );
+    
+          // Check if the invitee was found and updated
+          if (result.rows.length === 0) {
+            return null; // Invitee not found
+          }
+    
+          return result.rows[0]; // Return the updated invitee
+        } catch (error) {
+          console.error("Error updating invitee status:", error);
+          throw new Error("Failed to update invitee status");
         }
-
-        values.push(id);
-        const query = `UPDATE invitees SET ${updates.join(', ')} WHERE id = $${index} RETURNING *`;
-
-        const { rows } = await queryWithLogging(this.pool, query, values);
-        return rows[0] || null;
-    }
-
-    async delete(id: string): Promise<void> {
-        await queryWithLogging(this.pool, "DELETE FROM invitees WHERE id = $1", [id]);
-    }
+      }
 
     
 }

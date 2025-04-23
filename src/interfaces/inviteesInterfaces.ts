@@ -25,8 +25,10 @@ export interface IInviteeRepository {
   findByEventId(event_id: string): Promise<IInvitee[]>;
   findByUserId(user_id: string): Promise<IInvitee[]>;
   create(invitee: IInviteeWithoutId): Promise<IInvitee>;
-  update(id: string, invitee: Partial<IInviteeWithoutId>): Promise<IInvitee | null>;
-  delete(id: string): Promise<void>;
+  // update(id: string, invitee: Partial<IInviteeWithoutId>): Promise<IInvitee | null>;
+  // delete(id: string): Promise<void>;
 }
 
-export interface IInviteeService extends IInviteeRepository {}
+export interface IInviteeService extends IInviteeRepository {
+    updateStatus(id: string, status: string): IInvitee | PromiseLike<IInvitee | null> | null;
+}
