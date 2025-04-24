@@ -9,6 +9,7 @@ CREATE TABLE events (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
   CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id)
+
 );
 CREATE TABLE invitees (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -19,4 +20,5 @@ CREATE TABLE invitees (
     is_checked_in BOOLEAN DEFAULT FALSE,
     checked_in_at TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
 );

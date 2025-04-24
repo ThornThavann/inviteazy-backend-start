@@ -1,9 +1,21 @@
+declare global{
+  namespace Express{
+    interface Request{
+      user?: IUserWithoutPassword
+    }
+  }
+}
+
 export interface IUser {
-  id?: string;
-  name: string;
-  email: string;
-  password: string;
-  role: "admin" | "public" | "tourist";
+  id?: string; // UUID
+  email: string; // Unique
+  password: string; // Hashed
+  full_name: string;
+  phone_number?: string;
+  profile_picture?: string;
+  address?: string;
+  created_at?: string; // ISO timestamp
+  updated_at?: string; // ISO timestamp
 }
 
 export interface IUserWithoutPassword extends Omit<IUser, "password"> {}

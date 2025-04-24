@@ -13,7 +13,7 @@ export class PostgresUserRepository implements IUserRepository {
   async findAll(): Promise<IUser[]> {
     const { rows } = await queryWithLogging(
       this.pool,
-      "SELECT id, name, email,role FROM users"
+      "SELECT id, full_name, email FROM users"
     );
     return rows;
   }
@@ -21,7 +21,7 @@ export class PostgresUserRepository implements IUserRepository {
   async findById(id: string): Promise<IUser | null> {
     const { rows } = await queryWithLogging(
       this.pool,
-      "SELECT id, name, email, role FROM users WHERE id = $1",
+      "SELECT id, full_name, email FROM users WHERE id = $1",
       [id]
     );
     return rows[0] || null;
@@ -40,8 +40,19 @@ export class PostgresUserRepository implements IUserRepository {
     const hashedPassword = await bcrypt.hash(user.password, 10);
     const { rows } = await queryWithLogging(
       this.pool,
-      "INSERT INTO users (name, email, password, role) VALUES ($1, $2, $3, $4) RETURNING id, name, email, role",
-      [user.name, user.email, hashedPassword, user.role]
+      `INSERT INTO users (
+  full_name, email, password,
+  phone_number, profile_picture, address
+) VALUES ($1, $2, $3, $4, $5, $6)
+RETURNING id, full_name, email, phone_number, profile_picture, address;`,
+      [
+        user.full_name,
+        user.email,
+        hashedPassword,
+        user.phone_number ?? null,
+        user.profile_picture ?? null,
+        user.address ?? null,
+      ]
     );
     return rows[0];
   }
