@@ -32,7 +32,7 @@ export class PostgresInviteesRepository implements IInviteeRepository {
     async create(invitee: IInviteeWithoutId): Promise<IInvitee> {
         const id = uuidv4();
         const created_at = new Date();  
-        const status = invitee.status || 'pending'; // Default status if not provided
+        const status = invitee.status || 'invited'; // Default status if not provided
         const qr_code = invitee.qr_code || `https://example.com/qr/${id}`; // Default QR code if not provided
         const is_checked_in = invitee.is_checked_in ?? false; // Default to false if not provided
         const checked_in_at = invitee.checked_in_at ?? null; // Default to null if not provided
