@@ -2,6 +2,9 @@ import { IInvitee, IInviteeService, IInviteeWithoutId } from '../interfaces/invi
 import jwt from 'jsonwebtoken';
 
 export class InviteeService implements IInviteeService {
+    static create(inviteeData: IInviteeWithoutId) {
+      throw new Error("Method not implemented.");
+    }
     static updateStatus(id: string, status: any) {
         throw new Error("Method not implemented.");
     }
