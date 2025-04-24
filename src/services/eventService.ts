@@ -21,11 +21,6 @@ export class EventService implements IEventService {
   }
 
   async createEvent(event: IEventWithoutId): Promise<{ event: IEvent }> {
-    const existingEvent = await this.eventRepository.findByName(event.name);
-    if (existingEvent) {
-      throw Object.assign(new Error("Event already exists"), { status: 400 });
-    }
-
     const newEvent = await this.eventRepository.create(event);
 
     return { event: newEvent };

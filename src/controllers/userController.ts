@@ -46,12 +46,21 @@ export class UserController {
 
   async createUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const { name, email, password, role }: Omit<IUser, "id"> = req.body;
-      const newUser = await this.userService.createUser({
-        name,
+      const {
+        full_name,
         email,
         password,
-        role,
+        profile_picture,
+        phone_number,
+        address,
+      }: Omit<IUser, "id"> = req.body;
+      const newUser = await this.userService.createUser({
+        full_name,
+        email,
+        password,
+        profile_picture,
+        phone_number,
+        address,
       });
       res
         .status(201)
