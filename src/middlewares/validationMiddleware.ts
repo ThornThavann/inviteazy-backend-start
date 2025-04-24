@@ -6,14 +6,15 @@ const userSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
   phone_number: z
-    .string()
-    .optional()
-    .refine((val) => !val || /^[0-9]{9,10}$/.test(val), {
-      message: "Worng phone number",
-    }),
+  .string()
+  .optional()
+  .refine((val) => !val || /^[0-9]{9,10}$/.test(val), {
+    message: "Worng phone number",
+  }),
   profile_picture: z.string().url().optional(), // assuming it's a URL
   address: z.string().optional(),
 });
+
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -24,16 +25,6 @@ const idParamSchema = z.object({
   id: z.string(),
 });
 
-export const eventSchema = z.object({
-  name: z.string().min(3),
-  date: z.coerce.date(), // accepts a string like "2025-06-12" and converts to Date
-  time: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, {
-    message: "Time must be in HH:mm format (24-hour)",
-  }),
-
-  location: z.string(),
-  description: z.string().optional(),
-});
 
 export const validateUser = (
   req: Request,
