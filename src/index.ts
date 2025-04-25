@@ -18,6 +18,7 @@ import eventRoutes from "./routes/eventRoute";
 import { PostgresEventRepository } from "./repositories/postgres/eventRepositary";
 import { EventService } from "./services/eventService";
 import { EventController } from "./controllers/eventController";
+import { GuestInsightController } from "./controllers/guestInsightcontroller";
 // import inviteFireRoutes from "./routes/Invite-fire-route";
 
 dotenv.config();
@@ -56,6 +57,7 @@ app.use("/api/users", userRoutes(userController));
 app.use("/api/auth", authRoutes(authController));
 app.use("/api/v1", inviteesRoutes(inviteesController));
 app.use("/api/v1", eventRoutes(eventController));
+
 
 // app.use("/api/invitees", inviteFireRoutes());
 

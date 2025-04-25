@@ -6,6 +6,7 @@ interface AuthRequest extends Request {
 }
 export class EventController {
   private eventService: IEventService;
+  getGuestInsights: any;
 
   constructor(eventService: IEventService) {
     this.eventService = eventService;
@@ -13,9 +14,19 @@ export class EventController {
 
   async getAllEvents(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log(req.baseUrl, req.originalUrl);
+      const cacheKey = `data:${req.method}:${req.originalUrl}`;
+      const cacheData = await redisCache.get(cacheKey);
+
+      if (cacheData) {
+        res.json({
+          message: "Cache: Get all events",
+          data: JSON.parse(cacheData),
+        });
+        return;
+      }
 
       const result = await this.eventService.getAllEvents();
+      await redisCache.set(cacheKey, JSON.stringify(result), 360);
       res.json({ message: "Get all events.", data: result });
       return;
     } catch (error) {
@@ -26,29 +37,48 @@ export class EventController {
   async createEvent(req: AuthRequest, res: Response, next: NextFunction) {
     try {
       const { event_name, event_datetime, location, description } = req.body;
-      // const {id} = req.userid;
-      console.log('user',req.user)
 
-      console.log('id');
-      
-      // if (!id) {
-      //   res.status(401).json({ message: "Unauthorized: Missing user_id" });
-      //   return;
-      // }
-  
       const newEvent = await this.eventService.createEvent({
         event_name,
         event_datetime,
         location,
         description,
-        user_id:`${req.user}`
+        user_id: `${req.user}`,
       });
-  
-      res.status(201).json({ message: "A new event was created.", data: newEvent });
+
+      res
+        .status(201)
+        .json({ message: "A new event was created.", data: newEvent });
     } catch (err) {
       console.log(err);
       next(err);
     }
   }
-  
+
+  async geteventById(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { id } = req.params;
+
+      const cacheKey = `data:${req.method}:${req.originalUrl}`;
+      const cacheData = await redisCache.get(cacheKey);
+
+      if (cacheData) {
+        res.json({
+          message: "Cache: Get event by id",
+          data: JSON.parse(cacheData),
+        });
+        return;
+      }
+
+      const result = await this.eventService.getEventById(id);
+      await redisCache.set(cacheKey, JSON.stringify(result), 360);
+      res.json({ message: "Get event by Id", data: result });
+    } catch (error) {
+      next(error);
+    }
+  }
 }

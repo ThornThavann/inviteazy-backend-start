@@ -32,7 +32,7 @@ export class PostgresInviteesRepository implements IInviteeRepository {
     async create(invitee: IInviteeWithoutId): Promise<IInvitee> {
         const id = uuidv4();
         const created_at = new Date();  
-        const status = invitee.status || 'pending'; // Default status if not provided
+        const status = invitee.status || 'invited'; // Default status if not provided
         const qr_code = invitee.qr_code || `https://example.com/qr/${id}`; // Default QR code if not provided
         const is_checked_in = invitee.is_checked_in ?? false; // Default to false if not provided
         const checked_in_at = invitee.checked_in_at ?? null; // Default to null if not provided
@@ -58,26 +58,6 @@ export class PostgresInviteesRepository implements IInviteeRepository {
         return rows[0];
     }
 
-    // async update(id: string, invitee: Partial<IInviteeWithoutId>): Promise<IInvitee | null> {
-    //     const updates = [];
-    //     const values = [];
-    //     let index = 1;
-
-    //     for (const [key, value] of Object.entries(invitee)) {
-    //         updates.push(`${key} = $${index++}`);
-    //         values.push(value);
-    //     }
-
-    //     values.push(id);
-    //     const query = `UPDATE invitees SET ${updates.join(', ')} WHERE id = $${index} RETURNING *`;
-
-    //     const { rows } = await queryWithLogging(this.pool, query, values);
-    //     return rows[0] || null;
-    // }
-
-    // async delete(id: string): Promise<void> {
-    //     await queryWithLogging(this.pool, "DELETE FROM invitees WHERE id = $1", [id]);
-    // }
     async updateStatus(id: string, status: string) {
         try {
           // Update the invitee's status in the database

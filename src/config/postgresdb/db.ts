@@ -2,11 +2,11 @@ import { Pool } from "pg";
 
 export const connectPostgresDb = (): Pool => {
   const pool = new Pool({
-    user: "inviteazy",
+    user: "postgres",
     host: "localhost",
-    database: "inviteazy",
-    password: "inviteazy",
-    port: 5435,
+    database: "postgres",
+    password: "12345678",
+    port: 54322,
   });
   return pool;
 };
