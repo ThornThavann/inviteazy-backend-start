@@ -42,8 +42,19 @@ docker run -d \
   -v pg-data:/var/lib/postgresql/data \
   postgres:14.5
 
+
+docker run -d \
+  --name mariadb002 \
+  -e MARIADB_ROOT_PASSWORD=my-secret-pw \
+  -e MARIADB_DATABASE=mydb \
+  -e MARIADB_USER=myuser \
+  -e MARIADB_PASSWORD=mypassword \
+  -p 3303:3306 \
+  mariadb:latest
+
+
 # Access psql inside container
-docker exec -it postgres001 psql -U postgres
+docker exec -it mariadb002 mariadb -u root -p
 
 # Connect to database
 \c mydb
