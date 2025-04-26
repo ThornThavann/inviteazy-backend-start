@@ -18,7 +18,14 @@ import eventRoutes from "./routes/eventRoute";
 import { PostgresEventRepository } from "./repositories/postgres/eventRepositary";
 import { EventService } from "./services/eventService";
 import { EventController } from "./controllers/eventController";
-import { GuestInsightController } from "./controllers/guestInsightcontroller";
+import connectToMariaDb from "./config/mariadb/db";
+import { connection } from "mongoose";
+import pool from "./config/mariadb/db";
+import mariadb, { Pool, PoolConnection } from "mysql2/promise";
+import { MariaDbUserRepository } from "./repositories/mariadb/userRepositary";
+import { MariaDbEventRepository } from "./repositories/mariadb/eventRepositary";
+import { MariaDbInviteesRepository } from "./repositories/mariadb/inviteesRepo";
+
 // import inviteFireRoutes from "./routes/Invite-fire-route";
 
 dotenv.config();
@@ -28,13 +35,22 @@ const port = 3000;
 
 // Switch connection to database
 // connectMongoDB();
-const pgPool = connectPostgresDb();
+// const pgPool = connectPostgresDb();
+const mariadbPool: Pool = pool;
+
+
+
 
 // Repositories
-// const userRepository = new MongoUserRepository();
-const userRepository = new PostgresUserRepository(pgPool);
-const inviteesRepository = new PostgresInviteesRepository(pgPool);
-const eventRepository = new PostgresEventRepository(pgPool);
+//(MariaDB)//
+const userRepository = new MariaDbUserRepository(mariadbPool);
+const inviteesRepository = new MariaDbInviteesRepository(mariadbPool);
+const eventRepository = new MariaDbEventRepository(mariadbPool);
+
+//(Postgres)
+// const userRepository = new PostgresUserRepository(pgPool);
+// const inviteesRepository = new PostgresInviteesRepository(pgPool);
+// const eventRepository = new PostgresEventRepository(pgPool);
 
 // Services
 const userService = new UserService(userRepository);
@@ -47,17 +63,16 @@ const authController = new AuthController(userService);
 const inviteesController = new InviteesController(inviteeService);
 const eventController = new EventController(eventService);
 
-
 // Middlewares
 app.use(express.json());
 app.use(loggingMiddleware);
 
 // Routes
+
 app.use("/api/users", userRoutes(userController));
 app.use("/api/auth", authRoutes(authController));
 app.use("/api/v1", inviteesRoutes(inviteesController));
 app.use("/api/v1", eventRoutes(eventController));
-
 
 // app.use("/api/invitees", inviteFireRoutes());
 
@@ -67,3 +82,6 @@ app.use(errorMiddleware);
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
+
+
+
