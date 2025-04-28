@@ -27,7 +27,6 @@ const { userRepository, inviteesRepository, eventRepository } =
 
 // Services
 const userService = new UserService(userRepository);
-
 const inviteeService = new InviteeService(inviteesRepository);
 const eventService = new EventService(eventRepository);
 

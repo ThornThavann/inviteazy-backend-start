@@ -145,9 +145,4 @@ export const validateBasicEvent = (
   }
 };
 
-export const InviteeSchema = z.object({
-  userId: z.string().uuid(),     // the ID of the invited user
-  eventId: z.string().uuid(),    // the event they're invited to
-  status: z.enum(["pending", "accepted", "declined"]).optional(), // optional status
-});
 
