@@ -44,3 +44,5 @@ export class PostgresEventRepository implements IEventRepository {
     return rows[0] || null;
   }
 }
+
+

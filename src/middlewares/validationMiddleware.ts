@@ -97,6 +97,17 @@ export const validateIdInURLParam = (
   }
 };
 
+
+export const eventSchema = z.object({
+  name: z.string().min(3),
+  date: z.coerce.date(), // accepts a string like "2025-06-12" and converts to Date
+  time: z.string(),       // use string here like "18:00"
+  location: z.string(),
+  description: z.string().optional(),
+});
+
+
+
 export const validateInvitee = (
   req: Request,
   res: Response,
@@ -104,6 +115,7 @@ export const validateInvitee = (
 ): void => {
   try {
     InviteeSchema.parse(req.body);
+
 
     next();
   } catch (error) {
@@ -122,6 +134,7 @@ export const validateBasicEvent = (
 ): void => {
   try {
     basicEventSchema.parse(req.body);
+
     next();
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -131,3 +144,10 @@ export const validateBasicEvent = (
     next(error);
   }
 };
+
+export const InviteeSchema = z.object({
+  userId: z.string().uuid(),     // the ID of the invited user
+  eventId: z.string().uuid(),    // the event they're invited to
+  status: z.enum(["pending", "accepted", "declined"]).optional(), // optional status
+});
+

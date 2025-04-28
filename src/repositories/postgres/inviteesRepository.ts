@@ -58,6 +58,28 @@ export class PostgresInviteesRepository implements IInviteeRepository {
         return rows[0];
     }
 
+
+    // async update(id: string, invitee: Partial<IInviteeWithoutId>): Promise<IInvitee | null> {
+    //     const updates = [];
+    //     const values = [];
+    //     let index = 1;
+
+    //     for (const [key, value] of Object.entries(invitee)) {
+    //         updates.push(`${key} = $${index++}`);
+    //         values.push(value);
+    //     }
+
+    //     values.push(id);
+    //     const query = `UPDATE invitees SET ${updates.join(', ')} WHERE id = $${index} RETURNING *`;
+
+    //     const { rows } = await queryWithLogging(this.pool, query, values);
+    //     return rows[0] || null;
+    // }
+
+    // async delete(id: string): Promise<void> {
+    //     await queryWithLogging(this.pool, "DELETE FROM invitees WHERE id = $1", [id]);
+    // }
+
     async updateStatus(id: string, status: string) {
         try {
           // Update the invitee's status in the database

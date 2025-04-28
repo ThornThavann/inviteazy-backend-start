@@ -1,3 +1,4 @@
+
 import { Router } from "express";
 import { InviteesController } from "../controllers/inviteesController";
 import { authMiddleware } from "../middlewares/authMiddleware";
