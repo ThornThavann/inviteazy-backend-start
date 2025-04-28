@@ -2,6 +2,7 @@ import { Pool } from "mysql2/promise";
 import bcrypt from "bcrypt";
 import { IUser, IUserRepository } from "../../interfaces/userInterface";
 import { queryWithLogging } from "./utils";
+import { v4 } from 'uuid'; 
 
 export class MariaDbUserRepository implements IUserRepository {
   private pool: Pool;
@@ -45,14 +46,16 @@ export class MariaDbUserRepository implements IUserRepository {
   }
 
   const hashedPassword = await bcrypt.hash(user.password, 10);
+  const id = v4(); // Generate a new UUID for the user ID
 
   await queryWithLogging<any>(
     this.pool,
     `INSERT INTO users (
-      full_name, email, password,
+      id, full_name, email, password,
       phone_number, profile_picture, address
-    ) VALUES (?, ?, ?, ?, ?, ?)`,
+    ) VALUES (? ,?, ?, ?, ?, ?, ?)`,
     [
+      id,
       user.full_name,
       user.email,
       hashedPassword,
