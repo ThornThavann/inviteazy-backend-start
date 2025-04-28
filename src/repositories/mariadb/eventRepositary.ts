@@ -5,6 +5,7 @@ import {
   IEventWithoutId,
 } from "../../interfaces/eventInterface";
 import { queryWithLogging } from "./utils";
+import { v4 } from "uuid";
 
 export class MariaDbEventRepository implements IEventRepository {
   private pool: Pool;
@@ -22,13 +23,15 @@ export class MariaDbEventRepository implements IEventRepository {
   }
 
   async create(event: IEventWithoutId & { user_id: string }): Promise<IEvent> {
-    const { event_name, event_datetime, location, description, user_id } = event;
+    const { event_name, event_datetime, location, description, user_id } =
+      event;
+    const id = v4(); // Generate a new UUID for the user ID
 
     await queryWithLogging(
       this.pool,
-      `INSERT INTO events (event_name, event_datetime, location, description, user_id)
-       VALUES (?, ?, ?, ?, ?)`,
-      [event_name, event_datetime, location, description, user_id]
+      `INSERT INTO events (id, event_name, event_datetime, location, description, user_id)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [id, event_name, event_datetime, location, description, user_id]
     );
 
     const [rows] = await queryWithLogging<IEvent[]>(
