@@ -7,53 +7,27 @@ import { UserController } from "./controllers/userController";
 import { AuthController } from "./controllers/authController";
 import { InviteesController } from "./controllers/inviteesController";
 import authRoutes from "./routes/authRoutes";
-import { connectPostgresDb } from "./config/postgresdb/db";
-// import { Firebase } from "./config/firebase/db";
-import { PostgresUserRepository } from "./repositories/postgres/userRepository";
 import { InviteeService } from "./services/inviteesService";
-import { PostgresInviteesRepository } from "./repositories/postgres/inviteesRepository";
 import { loggingMiddleware } from "./middlewares/loggingMiddleware";
 import inviteesRoutes from "./routes/inviteesRoutes";
 import eventRoutes from "./routes/eventRoute";
-import { PostgresEventRepository } from "./repositories/postgres/eventRepositary";
 import { EventService } from "./services/eventService";
 import { EventController } from "./controllers/eventController";
-import connectToMariaDb from "./config/mariadb/db";
-import { connection } from "mongoose";
-import pool from "./config/mariadb/db";
-import mariadb, { Pool, PoolConnection } from "mysql2/promise";
-import { MariaDbUserRepository } from "./repositories/mariadb/userRepositary";
-import { MariaDbEventRepository } from "./repositories/mariadb/eventRepositary";
-import { MariaDbInviteesRepository } from "./repositories/mariadb/inviteesRepo";
+import { createRepositories } from "./fectory/factoryRepo";
 
-// import inviteFireRoutes from "./routes/Invite-fire-route";
 
 dotenv.config();
 
 const app = express();
 const port = 3000;
 
-// Switch connection to database
-// connectMongoDB();
-// const pgPool = connectPostgresDb();
-const mariadbPool: Pool = pool;
-
-
-
-
-// Repositories
-//(MariaDB)//
-const userRepository = new MariaDbUserRepository(mariadbPool);
-const inviteesRepository = new MariaDbInviteesRepository(mariadbPool);
-const eventRepository = new MariaDbEventRepository(mariadbPool);
-
-//(Postgres)
-// const userRepository = new PostgresUserRepository(pgPool);
-// const inviteesRepository = new PostgresInviteesRepository(pgPool);
-// const eventRepository = new PostgresEventRepository(pgPool);
+const dbType = process.env.DB_TYPE || "postgres";
+const { userRepository, inviteesRepository, eventRepository } =
+  createRepositories(dbType);
 
 // Services
 const userService = new UserService(userRepository);
+
 const inviteeService = new InviteeService(inviteesRepository);
 const eventService = new EventService(eventRepository);
 
@@ -82,6 +56,3 @@ app.use(errorMiddleware);
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
-
-
-

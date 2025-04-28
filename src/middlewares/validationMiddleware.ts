@@ -36,6 +36,12 @@ const loginSchema = z.object({
   password: z.string().min(8),
 });
 
+export const InviteeSchema = z.object({
+  userId: z.string().uuid(), // the ID of the invited user
+  eventId: z.string().uuid(), // the event they're invited to
+  status: z.enum(["pending", "accepted", "declined"]).optional(), // optional status
+});
+
 const idParamSchema = z.object({
   id: z.string(),
 });
@@ -108,12 +114,6 @@ export const validateInvitee = (
     next(error);
   }
 };
-
-export const InviteeSchema = z.object({
-  userId: z.string().uuid(), // the ID of the invited user
-  eventId: z.string().uuid(), // the event they're invited to
-  status: z.enum(["pending", "accepted", "declined"]).optional(), // optional status
-});
 
 export const validateBasicEvent = (
   req: Request,

@@ -26,8 +26,8 @@ export interface IInviteeRepository {
   create(invitee: IInviteeWithoutId): Promise<IInvitee>;
   // update(id: string, invitee: Partial<IInviteeWithoutId>): Promise<IInvitee | null>;
   // delete(id: string): Promise<void>;
+  updateStatus(id: string, status: string): IInvitee | PromiseLike<IInvitee | null> | null;
 }
 
 export interface IInviteeService extends IInviteeRepository {
-    updateStatus(id: string, status: string): IInvitee | PromiseLike<IInvitee | null> | null;
 }

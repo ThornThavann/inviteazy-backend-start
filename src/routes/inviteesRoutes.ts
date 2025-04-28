@@ -13,7 +13,7 @@ export default function inviteesRoutes(controller: InviteesController): Router {
     controller.getAllInvitees.bind(controller)
   );
   router.get(
-    "/:id",
+    "/invite/:id",
     authMiddleware,
     validateIdInURLParam,
     controller.getInviteeById.bind(controller)

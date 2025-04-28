@@ -17,7 +17,7 @@ export async function queryWithLogging<T>(
       sql,
       params,
       rowCount: rows.length,
-      duration: `${duration}ms`, // ← Fix: wrap with backticks to use template literal
+      duration: `${duration}ms`, 
     });
 
     return [rows as T, fields];
@@ -29,7 +29,7 @@ export async function queryWithLogging<T>(
         sql,
         params,
         error: error.message,
-        duration: `${duration}ms`, // ← Same fix here
+        duration: `${duration}ms`, 
       });
     }
     throw error;
