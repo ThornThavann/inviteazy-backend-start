@@ -2,7 +2,7 @@ export interface IInvitee {
   id?: string;
   event_id: string; 
   user_id: string; 
-  status: 'invited' | 'accept' | 'maybe' | 'no' | 'busy'; 
+  status: 'invited' | 'accepted' | 'maybe' | 'no' | 'busy'; 
   qr_code: string;
   is_checked_in: boolean; 
   checked_in_at: Date | null; 
@@ -11,12 +11,11 @@ export interface IInvitee {
 
 export interface IInviteeWithoutId extends Omit<IInvitee, 'id' | 'created_at'> {
   event_id: string; 
-  status: 'invited' | 'accept' | 'maybe' | 'no' | 'busy'; 
+  status: 'invited' | 'accepted' | 'maybe' | 'no' | 'busy'; 
   qr_code: string;
   is_checked_in: boolean; 
   checked_in_at: Date | null;
 }
-// export interface IInviteeWithoutId extends Omit<IInvitee, 'event_id' | 'status' | 'qr_code' | 'is_check_in' | 'checked_in_at' | 'id' | 'created_at'> {}
 
 
 export interface IInviteeRepository {
@@ -27,8 +26,8 @@ export interface IInviteeRepository {
   create(invitee: IInviteeWithoutId): Promise<IInvitee>;
   // update(id: string, invitee: Partial<IInviteeWithoutId>): Promise<IInvitee | null>;
   // delete(id: string): Promise<void>;
+  updateStatus(id: string, status: string): IInvitee | PromiseLike<IInvitee | null> | null;
 }
 
 export interface IInviteeService extends IInviteeRepository {
-    updateStatus(id: string, status: string): IInvitee | PromiseLike<IInvitee | null> | null;
 }

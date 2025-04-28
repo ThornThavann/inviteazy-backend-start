@@ -8,36 +8,27 @@ import { AuthController } from "./controllers/authController";
 import { InviteesController } from "./controllers/inviteesController";
 import authRoutes from "./routes/authRoutes";
 import { InviteeService } from "./services/inviteesService";
-import { PostgresInviteesRepository } from './repositories/postgres/inviteesRepository';
-import inviteesRoutes from "./routes/inviteesRoutes";
-import { connectPostgresDb } from "./config/postgresdb/db";
-import { PostgresUserRepository } from "./repositories/postgres/userRepository";
 import { loggingMiddleware } from "./middlewares/loggingMiddleware";
+import inviteesRoutes from "./routes/inviteesRoutes";
 import eventRoutes from "./routes/eventRoute";
-import { PostgresEventRepository } from "./repositories/postgres/eventRepositary";
 import { EventService } from "./services/eventService";
 import { EventController } from "./controllers/eventController";
-// import inviteFireRoutes from "./routes/Invite-fire-route";
-// import { Firebase } from "./config/firebase/db";
+import { createRepositories } from "./fectory/factoryRepo";
+
 
 dotenv.config();
 
 const app = express();
 const port = 3000;
 
-// Switch connection to database
-// connectMongoDB();
-const pgPool = connectPostgresDb();
-
-// Repositories
-// const userRepository = new MongoUserRepository();
-const userRepository = new PostgresUserRepository(pgPool);
-const inviteesRepository = new PostgresInviteesRepository(pgPool);
-const eventRepository = new PostgresEventRepository(pgPool);
+const dbType = process.env.DB_TYPE || "postgres";
+const { userRepository, inviteesRepository, eventRepository } =
+  createRepositories(dbType);
 
 // Services
-const inviteeService = new InviteeService(inviteesRepository);
 const userService = new UserService(userRepository);
+
+const inviteeService = new InviteeService(inviteesRepository);
 const eventService = new EventService(eventRepository);
 
 // Controllers
@@ -46,17 +37,16 @@ const authController = new AuthController(userService);
 const inviteesController = new InviteesController(inviteeService);
 const eventController = new EventController(eventService);
 
-
 // Middlewares
 app.use(express.json());
 app.use(loggingMiddleware);
 
 // Routes
+
 app.use("/api/users", userRoutes(userController));
 app.use("/api/auth", authRoutes(authController));
 app.use("/api/v1", inviteesRoutes(inviteesController));
 app.use("/api/v1", eventRoutes(eventController));
-
 
 // app.use("/api/invitees", inviteFireRoutes());
 

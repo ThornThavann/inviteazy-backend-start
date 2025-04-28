@@ -16,38 +16,33 @@ export class PostgresEventRepository implements IEventRepository {
   async findAll(): Promise<IEvent[]> {
     const { rows } = await queryWithLogging(
       this.pool,
-      "SELECT id, name, date, time, location, description FROM events"
+      "SELECT id, event_name, event_datetime, location, description FROM events"
     );
     return rows;
   }
+  async create(event: IEventWithoutId & { user_id: string }): Promise<IEvent> {
+    const { event_name, event_datetime, location, description, user_id } =
+      event;
 
-  async create(event: IEventWithoutId): Promise<IEvent> {
-    const { name, date, time, location, description } = event;
     const { rows } = await queryWithLogging(
       this.pool,
-      "INSERT INTO events (name, date, time, location, description) VALUES ($1, $2, $3, $4, $5) RETURNING id, name, date, time, location, description",
-      [name, date, time, location, description]
+      `INSERT INTO events (event_name, event_datetime, location, description, user_id)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING id, event_name, event_datetime, location, description, user_id`,
+      [event_name, event_datetime, location, description, user_id]
     );
+
     return rows[0];
   }
 
-    async findById(id: string): Promise<IEvent | null> {
-      const { rows } = await queryWithLogging(
-        this.pool,
-        "SELECT id, name, date, time, location, description FROM events WHERE id = $1",
-        [id]
-      );
-      return rows[0] || null;
-    }
-
-    async findByName(name: string): Promise<IEvent | null> {
-      const { rows } = await queryWithLogging(
-        this.pool,
-        "SELECT id, name, date, time, location, description FROM events WHERE name = $1",
-        [name]
-      );
-      return rows[0] || null;
-    }
+  async findById(id: string): Promise<IEvent | null> {
+    const { rows } = await queryWithLogging(
+      this.pool,
+      "SELECT id, event_name, event_datetime, location, description FROM events WHERE id = $1",
+      [id]
+    );
+    return rows[0] || null;
+  }
 }
 
 

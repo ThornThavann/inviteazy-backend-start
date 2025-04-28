@@ -37,6 +37,7 @@ export class InviteeService implements IInviteeService {
         return await this.inviteeRepository.create(invitee);
     }
 
+
     // async update(id: string, invitee: Partial<IInviteeWithoutId>): Promise<IInvitee | null> {
     //     return await this.inviteeRepository.update(id, invitee);
     // }
@@ -44,6 +45,7 @@ export class InviteeService implements IInviteeService {
     // delete(id: string): Promise<void> {
     //     return this.inviteeRepository.delete(id);
     // }
+
     async updateStatus(id: string, status: string): Promise<IInvitee | null> {
         return await this.inviteeRepository.updateStatus(id, status);
       }

@@ -25,11 +25,11 @@ export class UserService implements IUserService {
   async createUser(user: Omit<IUser, "id">) {
     const existingUser = await this.userRepository.findByEmail(user.email);
     if (existingUser) {
-      throw Object.assign(new Error("User already exists"), { status: 400 });
+      throw new Error("User already exists"); 
     }
-
+  
     const newUser = await this.userRepository.create(user);
-
+  
     const token = jwt.sign(
       { id: newUser.id },
       process.env.JWT_SECRET as string,
@@ -37,6 +37,7 @@ export class UserService implements IUserService {
     );
     return { user: newUser, token };
   }
+  
 
   async login(email: string, password: string) {
     const user = await this.userRepository.findByEmail(email);
@@ -57,11 +58,14 @@ export class UserService implements IUserService {
     return {
       user: {
         id: user.id,
-        name: user.name,
-        role: user.role,
+        full_name: user.full_name, // changed 
         email: user.email,
+        phone_number: user.phone_number, // optional
+        profile_picture: user.profile_picture, // optional
+        address: user.address, // optional
       },
       token,
     };
   }
 }
+
