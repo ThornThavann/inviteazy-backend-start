@@ -8,7 +8,7 @@ const connection = mysql.createPool({
   user: process.env.MARIADB_USER || "myuser",
   password: process.env.MARIADB_PASSWORD || "mypassword",   
   database: process.env.MARIADB_DATABASE || "mydb",
-  port: parseInt(process.env.MDB_PORT || "3303"),
+  port: parseInt(process.env.MDB_PORT || "3306"),
   waitForConnections: true,
   connectionLimit: 5,
   queueLimit: 0,
